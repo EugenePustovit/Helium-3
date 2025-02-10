@@ -1,13 +1,24 @@
+
 import simpy
+
 from Components.mining_truck import MiningTruck
+from Helper import data_analysis as da
+from Helper import cmd
 
-mining_trucks_count = 13
-mining_unload_stations_count = 7
-simulation_time = 72 * 60
-# simulation_time = 10 * 60
+# parse simulation parameters input from command line
+args = cmd.parse_cmd_options()
 
+# create work log
+work_log = da.report_template(args.truck)
+
+# run simulation
 env = simpy.Environment()
-unload_station = simpy.Resource(env, capacity=mining_unload_stations_count)
-for i in range(mining_trucks_count):
-    MiningTruck(env, unload_station, i)
-env.run(until=simulation_time)
+unload_station = simpy.Resource(env, capacity=args.station)
+
+for truck_id in range(args.truck):
+    MiningTruck(env, unload_station, truck_id, work_log, args.verbose)
+
+env.run(until=args.time * 60)
+
+# generate and print reports
+da.calculate_and_report_statistics(work_log, args.verbose)
