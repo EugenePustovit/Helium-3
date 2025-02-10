@@ -19,7 +19,7 @@ def parse_cmd_options() -> argparse.ArgumentParser.parse_args:
                         '--time',
                         type=int,
                         default=72,
-                        help='Mining time for simulation (in hours)')
+                        help='Mining time for simulation [hours]')
     parser.add_argument('-v',
                         '--verbose',
                         action='store_true',
